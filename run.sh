@@ -9,4 +9,4 @@ gcc             \
 
 ./main.o
 
-#rm main.o
+rm main.o
