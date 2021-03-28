@@ -1,0 +1,138 @@
+#include "tokenizer.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+
+int tokenizer_is_valid_char(char c)
+{
+    return isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '.';
+}
+
+Tokenizer *tokenizer_create(char *expression)
+{
+    if (expression == NULL)
+    {
+        return NULL;
+    }
+
+    Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
+    tokenizer->expression = expression;
+    tokenizer->begin = expression;
+    tokenizer->end = expression;
+    tokenizer->pointer = expression;
+    while (*(tokenizer->end++))
+        ;
+    tokenizer->end--;
+}
+
+Token *tokenizer_next(Tokenizer *tokenizer)
+{
+    while (!tokenizer_is_valid_char(*tokenizer->pointer) && tokenizer->pointer < tokenizer->end)
+    {
+        tokenizer->pointer++;
+    }
+
+    Token *result = NULL;
+
+    if (tokenizer->pointer >= tokenizer->end)
+    {
+        result = token_create_end();
+    }
+    else if (*tokenizer->pointer == '+')
+    {
+        result = token_create_addition();
+    }
+    else if (*tokenizer->pointer == '-')
+    {
+        result = token_create_substraction();
+    }
+    else if (*tokenizer->pointer == '*')
+    {
+        result = token_create_multiplication();
+    }
+    else if (*tokenizer->pointer == '/')
+    {
+        result = token_create_division();
+    }
+    else if (*tokenizer->pointer == '(')
+    {
+        result = token_create_bracket_open();
+    }
+    else if (*tokenizer->pointer == ')')
+    {
+        result = token_create_bracket_close();
+    }
+    else if (*tokenizer->pointer == '.')
+    {
+        char *current = tokenizer->pointer;
+        int lenght = 1;
+
+        for (tokenizer->pointer++; isdigit(*tokenizer->pointer); tokenizer->pointer++, lenght++)
+            ;
+        char *value = malloc(sizeof(char) * lenght + 2);
+        value[0] = '0';
+
+        for (int i = 1; i <= lenght; i++, current++)
+        {
+            value[i] = *current;
+        }
+        value[lenght + 1] = '\0';
+        result = token_create_number(strtod(value, NULL));
+        free(value);
+        tokenizer->pointer -= 1;
+    }
+    else if (isdigit(*tokenizer->pointer))
+    {
+        char *current = tokenizer->pointer;
+        int lenght = 0;
+        int decimal_separator_count = 0;
+
+        for (; isdigit(*tokenizer->pointer) || (*tokenizer->pointer == '.' && decimal_separator_count == 0) || *tokenizer->pointer == ','; tokenizer->pointer++, lenght++)
+        {
+            if (*tokenizer->pointer == '.')
+            {
+                decimal_separator_count++;
+            }
+            else if (*tokenizer->pointer == ',')
+            {
+                lenght--;
+            }
+        }
+        char *value = malloc(sizeof(char) * lenght + 1);
+
+        for (int i = 0; i < lenght; i++, current++)
+        {
+            if (*current != ',')
+            {
+                value[i] = *current;
+            }
+            else
+            {
+                i--;
+            }
+        }
+        value[lenght] = '\0';
+        result = token_create_number(strtod(value, NULL));
+        free(value);
+        tokenizer->pointer -= 1;
+    }
+
+    tokenizer->pointer++;
+    return result;
+}
+
+void tokenizer_reset(Tokenizer *tokenizer)
+{
+    if (tokenizer != NULL)
+    {
+        tokenizer->pointer = tokenizer->begin;
+    }
+}
+
+void tokenizer_destroy(Tokenizer *tokenizer)
+{
+    if (tokenizer != NULL)
+    {
+        free(tokenizer);
+    }
+}
