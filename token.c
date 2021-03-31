@@ -88,3 +88,34 @@ void token_print(Token *token)
         }
     }
 }
+
+void token_print_type(TokenType type)
+{
+    switch (type)
+    {
+    case Number:
+        printf("Number\n");
+        break;
+    case Addition:
+        printf("+\n");
+        break;
+    case Substraction:
+        printf("-\n");
+        break;
+    case Multiplication:
+        printf("*\n");
+        break;
+    case Division:
+        printf("/\n");
+        break;
+    case BracketOpen:
+        printf("(\n");
+        break;
+    case BracketClose:
+        printf(")\n");
+        break;
+    case End:
+        printf("END\n");
+        break;
+    }
+}
