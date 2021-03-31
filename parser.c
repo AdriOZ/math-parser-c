@@ -39,7 +39,7 @@ struct s_ResultStackHead
     struct s_ResultStackNode *node;
 };
 
-void push_output_queue(struct s_OutputQueueHead *head, double value, TokenType type)
+static void push_output_queue(struct s_OutputQueueHead *head, double value, TokenType type)
 {
     if (head != NULL)
     {
@@ -65,7 +65,7 @@ void push_output_queue(struct s_OutputQueueHead *head, double value, TokenType t
     }
 }
 
-struct s_OutputQueueNode *pop_output_queue(struct s_OutputQueueHead *head)
+static struct s_OutputQueueNode *pop_output_queue(struct s_OutputQueueHead *head)
 {
     struct s_OutputQueueNode *result = NULL;
 
@@ -79,7 +79,7 @@ struct s_OutputQueueNode *pop_output_queue(struct s_OutputQueueHead *head)
     return result;
 }
 
-void push_operator_stack(struct s_OperatorStackHead *head, TokenType type)
+static void push_operator_stack(struct s_OperatorStackHead *head, TokenType type)
 {
     if (head != NULL)
     {
@@ -99,7 +99,7 @@ void push_operator_stack(struct s_OperatorStackHead *head, TokenType type)
     }
 }
 
-TokenType pop_operator_stack(struct s_OperatorStackHead *head)
+static TokenType pop_operator_stack(struct s_OperatorStackHead *head)
 {
     TokenType result;
 
@@ -114,7 +114,7 @@ TokenType pop_operator_stack(struct s_OperatorStackHead *head)
     return result;
 }
 
-void push_result_stack(struct s_ResultStackHead *head, double value)
+static void push_result_stack(struct s_ResultStackHead *head, double value)
 {
     if (head != NULL)
     {
@@ -134,7 +134,7 @@ void push_result_stack(struct s_ResultStackHead *head, double value)
     }
 }
 
-double pop_result_stack(struct s_ResultStackHead *head)
+static double pop_result_stack(struct s_ResultStackHead *head)
 {
     double result;
 
@@ -414,6 +414,7 @@ void parser_destroy_token_list(TokenList *list)
 
     while (next != NULL)
     {
+        free(current->token);
         free(current);
         current = next;
         next = current->next;
