@@ -157,6 +157,7 @@ TokenList *parser_create_token_list(Token *token)
     TokenList *list = New(TokenList);
     list->token = token;
     list->next = NULL;
+    return list;
 }
 
 TokenList *parser_build_from_expression(char *expression)
@@ -276,6 +277,7 @@ ParserResult *parser_parse(char *expression)
             result->result = 0;
             result->error = error;
         }
+
         parser_destroy_token_list(list);
     }
     else

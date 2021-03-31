@@ -25,6 +25,7 @@ Tokenizer *tokenizer_create(char *expression)
     while (*(tokenizer->end++))
         ;
     tokenizer->end--;
+    return tokenizer;
 }
 
 Token *tokenizer_next(Tokenizer *tokenizer)
