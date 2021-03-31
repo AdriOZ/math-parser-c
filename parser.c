@@ -207,7 +207,10 @@ ParserResult *parser_parse(char *expression)
                     current->token.type == Multiplication ||
                     current->token.type == Division)
                 {
-                    while (stack->node != NULL && stack->node->type > current->token.type)
+                    while (
+                        stack->node != NULL &&
+                        stack->node->type > current->token.type &&
+                        stack->node->type != BracketOpen)
                     {
                         push_output_queue(queue, (Token){pop_operator_stack(stack), 0});
                     }
@@ -222,11 +225,7 @@ ParserResult *parser_parse(char *expression)
                     while (stack->node != NULL && stack->node->type != BracketOpen)
                     {
                         TokenType type = pop_operator_stack(stack);
-
-                        if (type != BracketOpen)
-                        {
-                            push_output_queue(queue, (Token){type, 0});
-                        }
+                        push_output_queue(queue, (Token){type, 0});
                     }
                     pop_operator_stack(stack);
                 }
@@ -234,7 +233,8 @@ ParserResult *parser_parse(char *expression)
 
             while (stack->node != NULL)
             {
-                push_output_queue(queue, (Token){pop_operator_stack(stack), 0});
+                TokenType type = pop_operator_stack(stack);
+                push_output_queue(queue, (Token){type, 0});
             }
 
             struct s_ResultStackHead *resultStack = New(struct s_ResultStackHead);
