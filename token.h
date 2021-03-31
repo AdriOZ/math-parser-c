@@ -52,3 +52,6 @@ void token_destroy(Token *token);
 
 // Prints the token
 void token_print(Token *token);
+
+// Prints the Token Type
+void token_print_type(TokenType type);
