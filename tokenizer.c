@@ -28,14 +28,14 @@ Tokenizer *tokenizer_create(char *expression)
     return tokenizer;
 }
 
-Token *tokenizer_next(Tokenizer *tokenizer)
+Token tokenizer_next(Tokenizer *tokenizer)
 {
     while (!tokenizer_is_valid_char(*tokenizer->pointer) && tokenizer->pointer < tokenizer->end)
     {
         tokenizer->pointer++;
     }
 
-    Token *result = NULL;
+    Token result;
 
     if (tokenizer->pointer >= tokenizer->end)
     {

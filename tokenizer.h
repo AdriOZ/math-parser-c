@@ -15,7 +15,7 @@ typedef struct s_Tokenizer
 Tokenizer *tokenizer_create(char *expression);
 
 // Gets the next token. This process moves the internal pointer the expression.
-Token *tokenizer_next(Tokenizer *tokenizer);
+Token tokenizer_next(Tokenizer *tokenizer);
 
 // Resets the internal pointer of the tokenizer to the beginning of the expression.
 void tokenizer_reset(Tokenizer *tokenizer);

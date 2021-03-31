@@ -21,37 +21,31 @@ typedef struct s_Token
 } Token;
 
 // Creates token based on the type and value passed
-Token *token_create(TokenType type, double value);
+Token token_create(TokenType type, double value);
 
 // Creates a number token with the value passed
-Token *token_create_number(double value);
+Token token_create_number(double value);
 
 // Creates an addition token
-Token *token_create_addition();
+Token token_create_addition();
 
 // Creates a substraction token
-Token *token_create_substraction();
+Token token_create_substraction();
 
 // Creates a multiplication token
-Token *token_create_multiplication();
+Token token_create_multiplication();
 
 // Creates a division token
-Token *token_create_division();
+Token token_create_division();
 
 // Creates a bracket open token
-Token *token_create_bracket_open();
+Token token_create_bracket_open();
 
 // Creates a bracket open token
-Token *token_create_bracket_close();
+Token token_create_bracket_close();
 
 // Creates an end token
-Token *token_create_end();
-
-// Destroys de token
-void token_destroy(Token *token);
+Token token_create_end();
 
 // Prints the token
 void token_print(Token *token);
-
-// Prints the Token Type
-void token_print_type(TokenType type);

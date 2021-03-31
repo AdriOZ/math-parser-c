@@ -2,14 +2,14 @@
 #include <stdio.h>
 
 #include "util.h"
-#include "parser.h"
+#include "token.h"
 #include "tokenizer.h"
+#include "parser.h"
 
 /* Private utilities */
 struct s_OutputQueueNode
 {
-    double value;
-    TokenType type;
+    Token token;
     struct s_OutputQueueNode *next;
 };
 
@@ -40,15 +40,14 @@ struct s_ResultStackHead
     struct s_ResultStackNode *node;
 };
 
-static void push_output_queue(struct s_OutputQueueHead *head, double value, TokenType type)
+static void push_output_queue(struct s_OutputQueueHead *head, Token token)
 {
     if (head != NULL)
     {
         if (head->node == NULL)
         {
             head->node = New(struct s_OutputQueueNode);
-            head->node->value = value;
-            head->node->type = type;
+            head->node->token = token;
             head->node->next = NULL;
         }
         else
@@ -59,8 +58,7 @@ static void push_output_queue(struct s_OutputQueueHead *head, double value, Toke
                 ;
 
             ptr->next = New(struct s_OutputQueueNode);
-            ptr->next->value = value;
-            ptr->next->type = type;
+            ptr->next->token = token;
             ptr->next->next = NULL;
         }
     }
@@ -152,7 +150,7 @@ static double pop_result_stack(struct s_ResultStackHead *head)
 
 /* Private utilities */
 
-TokenList *parser_create_token_list(Token *token)
+TokenList *parser_create_token_list(Token token)
 {
     TokenList *list = New(TokenList);
     list->token = token;
@@ -168,10 +166,10 @@ TokenList *parser_build_from_expression(char *expression)
     }
 
     Tokenizer *tokenizer = tokenizer_create(expression);
-    Token *token = tokenizer_next(tokenizer);
+    Token token = tokenizer_next(tokenizer);
     TokenList *list = parser_create_token_list(token);
 
-    while (token->type != End)
+    while (token.type != End)
     {
         token = tokenizer_next(tokenizer);
         parser_push_token_node(list, token);
@@ -197,33 +195,38 @@ ParserResult *parser_parse(char *expression)
             result->error = NULL;
             result->result = 0;
 
-            for (TokenListNode *current = list; current != NULL && current->token->type != End; current = current->next)
+            for (TokenListNode *current = list; current != NULL && current->token.type != End; current = current->next)
             {
-                if (current->token->type == Number)
+                if (current->token.type == Number)
                 {
-                    push_output_queue(queue, current->token->value, Number);
+                    push_output_queue(queue, current->token);
                 }
                 else if (
-                    current->token->type == Addition ||
-                    current->token->type == Substraction ||
-                    current->token->type == Multiplication ||
-                    current->token->type == Division)
+                    current->token.type == Addition ||
+                    current->token.type == Substraction ||
+                    current->token.type == Multiplication ||
+                    current->token.type == Division)
                 {
-                    while (stack->node != NULL && stack->node->type > current->token->type)
+                    while (stack->node != NULL && stack->node->type > current->token.type)
                     {
-                        push_output_queue(queue, 0, pop_operator_stack(stack));
+                        push_output_queue(queue, (Token){pop_operator_stack(stack), 0});
                     }
-                    push_operator_stack(stack, current->token->type);
+                    push_operator_stack(stack, current->token.type);
                 }
-                else if (current->token->type == BracketOpen)
+                else if (current->token.type == BracketOpen)
                 {
-                    push_operator_stack(stack, current->token->type);
+                    push_operator_stack(stack, current->token.type);
                 }
-                else if (current->token->type == BracketClose)
+                else if (current->token.type == BracketClose)
                 {
                     while (stack->node != NULL && stack->node->type != BracketOpen)
                     {
-                        push_output_queue(queue, 0, pop_operator_stack(stack));
+                        TokenType type = pop_operator_stack(stack);
+
+                        if (type != BracketOpen)
+                        {
+                            push_output_queue(queue, (Token){type, 0});
+                        }
                     }
                     pop_operator_stack(stack);
                 }
@@ -231,7 +234,7 @@ ParserResult *parser_parse(char *expression)
 
             while (stack->node != NULL)
             {
-                push_output_queue(queue, 0, pop_operator_stack(stack));
+                push_output_queue(queue, (Token){pop_operator_stack(stack), 0});
             }
 
             struct s_ResultStackHead *resultStack = New(struct s_ResultStackHead);
@@ -240,20 +243,20 @@ ParserResult *parser_parse(char *expression)
             {
                 struct s_OutputQueueNode *current = pop_output_queue(queue);
 
-                if (current->type == Number)
+                if (current->token.type == Number)
                 {
-                    push_result_stack(resultStack, current->value);
+                    push_result_stack(resultStack, current->token.value);
                 }
                 else if (
-                    current->type == Addition ||
-                    current->type == Substraction ||
-                    current->type == Multiplication ||
-                    current->type == Division)
+                    current->token.type == Addition ||
+                    current->token.type == Substraction ||
+                    current->token.type == Multiplication ||
+                    current->token.type == Division)
                 {
                     double value2 = pop_result_stack(resultStack);
                     double value1 = pop_result_stack(resultStack);
 
-                    switch (current->type)
+                    switch (current->token.type)
                     {
                     case Addition:
                         push_result_stack(resultStack, value1 + value2);
@@ -302,61 +305,61 @@ const char *parser_validate_list(TokenList *list)
         for (; !error && current; current = current->next)
         {
             if (
-                current->token->type == Number &&
-                (current->next && (current->next->token->type == Number || current->next->token->type == BracketOpen)))
+                current->token.type == Number &&
+                (current->next && (current->next->token.type == Number || current->next->token.type == BracketOpen)))
             {
                 error = "After a number only an operator or a closing bracket are allowed";
             }
             else if (
                 (
-                    current->token->type == Addition ||
-                    current->token->type == Substraction ||
-                    current->token->type == Multiplication ||
-                    current->token->type == Division) &&
+                    current->token.type == Addition ||
+                    current->token.type == Substraction ||
+                    current->token.type == Multiplication ||
+                    current->token.type == Division) &&
                 (!current->next ||
                  (current->next &&
-                  current->next->token->type != Number &&
-                  current->next->token->type != BracketOpen)))
+                  current->next->token.type != Number &&
+                  current->next->token.type != BracketOpen)))
             {
                 error = "After an operator, only a number or an opening bracket are allowed";
             }
             else if (
-                current->token->type == BracketOpen &&
+                current->token.type == BracketOpen &&
                 (!current->next ||
-                 current->next->token->type != Number))
+                 current->next->token.type != Number))
             {
                 error = "After an opening bracket, only a number is allowed";
             }
             else if (
-                current->token->type == BracketClose &&
-                (current->next && (current->next->token->type == Number || current->next->token->type == BracketOpen)))
+                current->token.type == BracketClose &&
+                (current->next && (current->next->token.type == Number || current->next->token.type == BracketOpen)))
             {
                 error = "After a closing bracket, only an operator is allowed";
             }
-            else if (current->token->type == BracketClose && brackets == 0)
+            else if (current->token.type == BracketClose && brackets == 0)
             {
                 printf("%d\n", brackets);
                 error = "Closing bracket found before any opening bracket";
             }
             else
             {
-                if (current->token->type == Number)
+                if (current->token.type == Number)
                 {
                     operands++;
                 }
                 else if (
-                    current->token->type == Addition ||
-                    current->token->type == Substraction ||
-                    current->token->type == Multiplication ||
-                    current->token->type == Division)
+                    current->token.type == Addition ||
+                    current->token.type == Substraction ||
+                    current->token.type == Multiplication ||
+                    current->token.type == Division)
                 {
                     operators++;
                 }
-                else if (current->token->type == BracketOpen)
+                else if (current->token.type == BracketOpen)
                 {
                     brackets++;
                 }
-                else if (current->token->type == BracketClose)
+                else if (current->token.type == BracketClose)
                 {
                     brackets--;
                 }
@@ -379,9 +382,9 @@ const char *parser_validate_list(TokenList *list)
     return error;
 }
 
-void parser_push_token_node(TokenList *list, Token *token)
+void parser_push_token_node(TokenList *list, Token token)
 {
-    if (list != NULL && token != NULL)
+    if (list != NULL)
     {
         TokenListNode *pointer = list;
 
@@ -405,7 +408,7 @@ void parser_print_token_list(TokenList *list)
 
         for (TokenListNode *pointer = list; pointer; pointer = pointer->next)
         {
-            token_print(pointer->token);
+            token_print(&pointer->token);
         }
     }
 }
@@ -417,7 +420,6 @@ void parser_destroy_token_list(TokenList *list)
 
     while (next != NULL)
     {
-        Delete(current->token);
         Delete(current);
         current = next;
         next = current->next;

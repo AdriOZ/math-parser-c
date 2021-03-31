@@ -1,52 +1,47 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include "util.h"
 #include "token.h"
 
-Token *token_create(TokenType type, double value)
+Token token_create(TokenType type, double value)
 {
-    Token *tmp = New(Token);
-    tmp->type = type;
-    tmp->value = value;
-    return tmp;
+    return (Token){type, value};
 }
 
-Token *token_create_number(double value)
+Token token_create_number(double value)
 {
     return token_create(Number, value);
 }
 
-Token *token_create_addition()
+Token token_create_addition()
 {
     return token_create(Addition, 0);
 }
 
-Token *token_create_substraction()
+Token token_create_substraction()
 {
     return token_create(Substraction, 0);
 }
 
-Token *token_create_multiplication()
+Token token_create_multiplication()
 {
     return token_create(Multiplication, 0);
 }
 
-Token *token_create_division()
+Token token_create_division()
 {
     return token_create(Division, 0);
 }
 
-Token *token_create_bracket_open()
+Token token_create_bracket_open()
 {
     return token_create(BracketOpen, 0);
 }
 
-Token *token_create_bracket_close()
+Token token_create_bracket_close()
 {
     return token_create(BracketClose, 0);
 }
 
-Token *token_create_end()
+Token token_create_end()
 {
     return token_create(End, 0);
 }
@@ -86,36 +81,5 @@ void token_print(Token *token)
             printf("Token { END }\n");
             break;
         }
-    }
-}
-
-void token_print_type(TokenType type)
-{
-    switch (type)
-    {
-    case Number:
-        printf("Number\n");
-        break;
-    case Addition:
-        printf("+\n");
-        break;
-    case Substraction:
-        printf("-\n");
-        break;
-    case Multiplication:
-        printf("*\n");
-        break;
-    case Division:
-        printf("/\n");
-        break;
-    case BracketOpen:
-        printf("(\n");
-        break;
-    case BracketClose:
-        printf(")\n");
-        break;
-    case End:
-        printf("END\n");
-        break;
     }
 }

@@ -5,7 +5,7 @@
 // Represents a node in a list of tokens.
 typedef struct s_TokenListNode
 {
-    Token *token;
+    Token token;
     struct s_TokenListNode *next;
 } TokenListNode;
 

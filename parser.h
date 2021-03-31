@@ -11,7 +11,7 @@ typedef struct s_ParserResult
 } ParserResult;
 
 // Creates a list of tokens starting from the passed token.
-TokenList *parser_create_token_list(Token *token);
+TokenList *parser_create_token_list(Token token);
 
 // Creates a list of tokens based on the passed expression.
 TokenList *parser_build_from_expression(char *expression);
@@ -23,7 +23,7 @@ ParserResult *parser_parse(char *expression);
 const char *parser_validate_list(TokenList *list);
 
 // Pushes a token into the end of the list.
-void parser_push_token_node(TokenList *list, Token *token);
+void parser_push_token_node(TokenList *list, Token token);
 
 // Frees the memory of the given token list. It does not free the memory of the created tokens.
 void parser_destroy_token_list(TokenList *list);
