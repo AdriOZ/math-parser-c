@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "util.h"
 #include "token.h"
 
 Token *token_create(TokenType type, double value)
 {
-    Token *tmp = malloc(sizeof(Token));
+    Token *tmp = New(Token);
     tmp->type = type;
     tmp->value = value;
     return tmp;
@@ -48,14 +49,6 @@ Token *token_create_bracket_close()
 Token *token_create_end()
 {
     return token_create(End, 0);
-}
-
-void token_destroy(Token *token)
-{
-    if (token != NULL)
-    {
-        free(token);
-    }
 }
 
 void token_print(Token *token)

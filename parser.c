@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "util.h"
 #include "parser.h"
 #include "tokenizer.h"
 
@@ -45,7 +46,7 @@ static void push_output_queue(struct s_OutputQueueHead *head, double value, Toke
     {
         if (head->node == NULL)
         {
-            head->node = malloc(sizeof(struct s_OutputQueueNode));
+            head->node = New(struct s_OutputQueueNode);
             head->node->value = value;
             head->node->type = type;
             head->node->next = NULL;
@@ -57,7 +58,7 @@ static void push_output_queue(struct s_OutputQueueHead *head, double value, Toke
             for (; ptr->next != NULL; ptr = ptr->next)
                 ;
 
-            ptr->next = malloc(sizeof(struct s_OutputQueueNode));
+            ptr->next = New(struct s_OutputQueueNode);
             ptr->next->value = value;
             ptr->next->type = type;
             ptr->next->next = NULL;
@@ -85,13 +86,13 @@ static void push_operator_stack(struct s_OperatorStackHead *head, TokenType type
     {
         if (head->node == NULL)
         {
-            head->node = malloc(sizeof(struct s_OperatorStackNode));
+            head->node = New(struct s_OperatorStackNode);
             head->node->type = type;
             head->node->next = NULL;
         }
         else
         {
-            struct s_OperatorStackNode *tmp = malloc(sizeof(struct s_OperatorStackNode));
+            struct s_OperatorStackNode *tmp = New(struct s_OperatorStackNode);
             tmp->type = type;
             tmp->next = head->node;
             head->node = tmp;
@@ -108,7 +109,7 @@ static TokenType pop_operator_stack(struct s_OperatorStackHead *head)
         result = head->node->type;
         struct s_OperatorStackNode *tmp = head->node;
         head->node = head->node->next;
-        free(tmp);
+        Delete(tmp);
     }
 
     return result;
@@ -120,13 +121,13 @@ static void push_result_stack(struct s_ResultStackHead *head, double value)
     {
         if (head->node == NULL)
         {
-            head->node = malloc(sizeof(struct s_ResultStackNode));
+            head->node = New(struct s_ResultStackNode);
             head->node->value = value;
             head->node->next = NULL;
         }
         else
         {
-            struct s_ResultStackNode *tmp = malloc(sizeof(struct s_ResultStackNode));
+            struct s_ResultStackNode *tmp = New(struct s_ResultStackNode);
             tmp->value = value;
             tmp->next = head->node;
             head->node = tmp;
@@ -143,7 +144,7 @@ static double pop_result_stack(struct s_ResultStackHead *head)
         result = head->node->value;
         struct s_ResultStackNode *tmp = head->node;
         head->node = head->node->next;
-        free(tmp);
+        Delete(tmp);
     }
 
     return result;
@@ -153,7 +154,7 @@ static double pop_result_stack(struct s_ResultStackHead *head)
 
 TokenList *parser_create_token_list(Token *token)
 {
-    TokenList *list = malloc(sizeof(TokenList));
+    TokenList *list = New(TokenList);
     list->token = token;
     list->next = NULL;
 }
@@ -175,13 +176,13 @@ TokenList *parser_build_from_expression(char *expression)
         parser_push_token_node(list, token);
     }
 
-    free(tokenizer);
+    Delete(tokenizer);
     return list;
 }
 
 ParserResult *parser_parse(char *expression)
 {
-    ParserResult *result = malloc(sizeof(ParserResult));
+    ParserResult *result = New(ParserResult);
 
     if (expression != NULL)
     {
@@ -190,8 +191,8 @@ ParserResult *parser_parse(char *expression)
 
         if (error == NULL)
         {
-            struct s_OutputQueueHead *queue = malloc(sizeof(struct s_OutputQueueHead));
-            struct s_OperatorStackHead *stack = malloc(sizeof(struct s_OutputQueueHead));
+            struct s_OutputQueueHead *queue = New(struct s_OutputQueueHead);
+            struct s_OperatorStackHead *stack = New(struct s_OperatorStackHead);
             result->error = NULL;
             result->result = 0;
 
@@ -232,7 +233,7 @@ ParserResult *parser_parse(char *expression)
                 push_output_queue(queue, 0, pop_operator_stack(stack));
             }
 
-            struct s_ResultStackHead *resultStack = malloc(sizeof(struct s_ResultStackHead));
+            struct s_ResultStackHead *resultStack = New(struct s_ResultStackHead);
 
             while (queue->node != NULL)
             {
@@ -384,7 +385,7 @@ void parser_push_token_node(TokenList *list, Token *token)
 
         for (; pointer->next; pointer = pointer->next)
             ;
-        pointer->next = malloc(sizeof(TokenListNode));
+        pointer->next = New(TokenListNode);
         pointer->next->next = NULL;
         pointer->next->token = token;
     }
@@ -414,8 +415,8 @@ void parser_destroy_token_list(TokenList *list)
 
     while (next != NULL)
     {
-        free(current->token);
-        free(current);
+        Delete(current->token);
+        Delete(current);
         current = next;
         next = current->next;
     }

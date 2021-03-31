@@ -1,7 +1,9 @@
-#include "tokenizer.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include "util.h"
+#include "tokenizer.h"
 
 int tokenizer_is_valid_char(char c)
 {
@@ -15,7 +17,7 @@ Tokenizer *tokenizer_create(char *expression)
         return NULL;
     }
 
-    Tokenizer *tokenizer = malloc(sizeof(Tokenizer));
+    Tokenizer *tokenizer = New(Tokenizer);
     tokenizer->expression = expression;
     tokenizer->begin = expression;
     tokenizer->end = expression;
@@ -69,7 +71,7 @@ Token *tokenizer_next(Tokenizer *tokenizer)
 
         for (tokenizer->pointer++; isdigit(*tokenizer->pointer); tokenizer->pointer++, lenght++)
             ;
-        char *value = malloc(sizeof(char) * lenght + 2);
+        char *value = NewArray(char, (lenght + 2));
         value[0] = '0';
 
         for (int i = 1; i <= lenght; i++, current++)
@@ -78,7 +80,7 @@ Token *tokenizer_next(Tokenizer *tokenizer)
         }
         value[lenght + 1] = '\0';
         result = token_create_number(strtod(value, NULL));
-        free(value);
+        Delete(value);
         tokenizer->pointer -= 1;
     }
     else if (isdigit(*tokenizer->pointer))
@@ -98,8 +100,7 @@ Token *tokenizer_next(Tokenizer *tokenizer)
                 lenght--;
             }
         }
-        char *value = malloc(sizeof(char) * lenght + 1);
-
+        char *value = NewArray(char, (lenght + 1));
         for (int i = 0; i < lenght; i++, current++)
         {
             if (*current != ',')
@@ -113,7 +114,7 @@ Token *tokenizer_next(Tokenizer *tokenizer)
         }
         value[lenght] = '\0';
         result = token_create_number(strtod(value, NULL));
-        free(value);
+        Delete(value);
         tokenizer->pointer -= 1;
     }
 
@@ -131,8 +132,5 @@ void tokenizer_reset(Tokenizer *tokenizer)
 
 void tokenizer_destroy(Tokenizer *tokenizer)
 {
-    if (tokenizer != NULL)
-    {
-        free(tokenizer);
-    }
+    Delete(tokenizer);
 }

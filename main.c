@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "util.h"
 #include "parser.h"
 
 int main()
 {
-    char *input = malloc(sizeof(char) * 100);
+    char *input = NewArray(char, 100);
     char c;
     int _;
 
@@ -24,7 +25,7 @@ int main()
         {
             printf("\n%s\n\n", result->error);
         }
-        free(result);
+        Delete(result);
     }
 
     return 0;
