@@ -11,8 +11,8 @@ int main()
     while (1)
     {
         printf("$> ");
-        scanf("%2000[^\n]", input);
-        scanf("%c", &c);
+        _ = scanf("%2000[^\n]", input);
+        _ = scanf("%c", &c);
 
         ParserResult *result = parser_parse(input);
 
@@ -27,7 +27,5 @@ int main()
         free(result);
     }
 
-    ParserResult *result = parser_parse("4 + 18 / (9 - 3)");
-    printf("%f\n", result->result);
     return 0;
 }
