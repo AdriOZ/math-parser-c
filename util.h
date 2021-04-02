@@ -6,4 +6,5 @@
 #define NewArray(type, size) (type *)malloc(sizeof(type) * size)
 #define Delete(object)  \
     if (object != NULL) \
-    free(object)
+        free(object);   \
+    object = NULL
