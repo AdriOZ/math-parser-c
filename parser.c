@@ -3,7 +3,7 @@
 
 #include "util.h"
 #include "token.h"
-#include "tokenizer.h"
+#include "token_list.h"
 #include "parser.h"
 
 /* Private utilities */
@@ -150,42 +150,13 @@ static double pop_result_stack(struct s_ResultStackHead *head)
 
 /* Private utilities */
 
-TokenList *parser_create_token_list(Token token)
-{
-    TokenList *list = New(TokenList);
-    list->token = token;
-    list->next = NULL;
-    return list;
-}
-
-TokenList *parser_build_from_expression(char *expression)
-{
-    if (expression == NULL)
-    {
-        return NULL;
-    }
-
-    Tokenizer *tokenizer = tokenizer_create(expression);
-    Token token = tokenizer_next(tokenizer);
-    TokenList *list = parser_create_token_list(token);
-
-    while (token.type != End)
-    {
-        token = tokenizer_next(tokenizer);
-        parser_push_token_node(list, token);
-    }
-
-    Delete(tokenizer);
-    return list;
-}
-
 ParserResult *parser_parse(char *expression)
 {
     ParserResult *result = New(ParserResult);
 
     if (expression != NULL)
     {
-        TokenList *list = parser_build_from_expression(expression);
+        TokenList *list = token_list_build_from_expression(expression);
         const char *error = parser_validate_list(list);
 
         if (error == NULL)
@@ -281,7 +252,7 @@ ParserResult *parser_parse(char *expression)
             result->error = error;
         }
 
-        parser_destroy_token_list(list);
+        token_list_destroy(list);
     }
     else
     {
@@ -380,48 +351,4 @@ const char *parser_validate_list(TokenList *list)
     }
 
     return error;
-}
-
-void parser_push_token_node(TokenList *list, Token token)
-{
-    if (list != NULL)
-    {
-        TokenListNode *pointer = list;
-
-        for (; pointer->next; pointer = pointer->next)
-            ;
-        pointer->next = New(TokenListNode);
-        pointer->next->next = NULL;
-        pointer->next->token = token;
-    }
-}
-
-void parser_print_token_list(TokenList *list)
-{
-    if (list == NULL)
-    {
-        printf("TokenList{ NULL }\n");
-    }
-    else
-    {
-        printf("\nTokenList\n=========\n");
-
-        for (TokenListNode *pointer = list; pointer; pointer = pointer->next)
-        {
-            token_print(&pointer->token);
-        }
-    }
-}
-
-void parser_destroy_token_list(TokenList *list)
-{
-    TokenListNode *current = list;
-    TokenListNode *next = current->next;
-
-    while (next != NULL)
-    {
-        Delete(current);
-        current = next;
-        next = current->next;
-    }
 }
