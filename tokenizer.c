@@ -5,7 +5,7 @@
 #include "util.h"
 #include "tokenizer.h"
 
-int tokenizer_is_valid_char(char c)
+static int tokenizer_is_valid_char(char c)
 {
     return isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '.';
 }
