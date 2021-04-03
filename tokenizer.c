@@ -7,7 +7,7 @@
 
 static int tokenizer_is_valid_char(char c)
 {
-    return isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '.';
+    return isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '(' || c == ')' || c == '.';
 }
 
 Tokenizer *tokenizer_create(char *expression)
@@ -56,6 +56,10 @@ Token tokenizer_next(Tokenizer *tokenizer)
     else if (*tokenizer->pointer == '/')
     {
         result = token_create_division();
+    }
+    else if (*tokenizer->pointer == '^')
+    {
+        result = token_create_exponentation();
     }
     else if (*tokenizer->pointer == '(')
     {

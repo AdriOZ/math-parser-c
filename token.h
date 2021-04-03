@@ -8,10 +8,11 @@ typedef enum e_TokenType
     Substraction = 2,
     Multiplication = 3,
     Division = 4,
-    BracketOpen = 5,
-    BracketClose = 6,
-    End = 7,
-    Unknown = 8
+    Exponentation = 5,
+    BracketOpen = 6,
+    BracketClose = 7,
+    End = 8,
+    Unknown = 9
 } TokenType;
 
 // Holds the type and the value of a token.
@@ -38,6 +39,9 @@ Token token_create_multiplication();
 
 // Creates a division token
 Token token_create_division();
+
+// Creates an exponentation token
+Token token_create_exponentation();
 
 // Creates a bracket open token
 Token token_create_bracket_open();

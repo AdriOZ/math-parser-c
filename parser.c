@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "util.h"
 #include "token.h"
@@ -176,7 +177,8 @@ ParserResult *parser_parse(char *expression)
                     current->token.type == Addition ||
                     current->token.type == Substraction ||
                     current->token.type == Multiplication ||
-                    current->token.type == Division)
+                    current->token.type == Division ||
+                    current->token.type == Exponentation)
                 {
                     while (
                         stack.node != NULL &&
@@ -226,7 +228,8 @@ ParserResult *parser_parse(char *expression)
                     current->token.type == Addition ||
                     current->token.type == Substraction ||
                     current->token.type == Multiplication ||
-                    current->token.type == Division)
+                    current->token.type == Division ||
+                    current->token.type == Exponentation)
                 {
                     double value2 = pop_result_stack(&resultStack);
                     double value1 = pop_result_stack(&resultStack);
@@ -244,6 +247,9 @@ ParserResult *parser_parse(char *expression)
                         break;
                     case Division:
                         push_result_stack(&resultStack, value1 / value2);
+                        break;
+                    case Exponentation:
+                        push_result_stack(&resultStack, pow(value1, value2));
                         break;
                     }
                 }
@@ -289,7 +295,8 @@ const char *parser_validate_list(TokenList *list)
                     current->token.type == Addition ||
                     current->token.type == Substraction ||
                     current->token.type == Multiplication ||
-                    current->token.type == Division) &&
+                    current->token.type == Division ||
+                    current->token.type == Exponentation) &&
                 (!current->next ||
                  (current->next &&
                   current->next->token.type != Number &&
@@ -325,7 +332,8 @@ const char *parser_validate_list(TokenList *list)
                     current->token.type == Addition ||
                     current->token.type == Substraction ||
                     current->token.type == Multiplication ||
-                    current->token.type == Division)
+                    current->token.type == Division ||
+                    current->token.type == Exponentation)
                 {
                     operators++;
                 }

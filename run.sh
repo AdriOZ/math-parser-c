@@ -6,7 +6,8 @@ gcc                 \
     main.c          \
 -o                  \
     main.o          \
--O3
+-O3                 \
+-lm
 
 ./main.o
 

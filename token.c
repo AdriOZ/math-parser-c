@@ -31,6 +31,11 @@ Token token_create_division()
     return token_create(Division, 0);
 }
 
+Token token_create_exponentation()
+{
+    return token_create(Exponentation, 0);
+}
+
 Token token_create_bracket_open()
 {
     return token_create(BracketOpen, 0);
@@ -70,6 +75,9 @@ void token_print(Token *token)
             break;
         case Division:
             printf("Token { Division('/') }\n");
+            break;
+        case Exponentation:
+            printf("Token { Exponentation('^') }\n");
             break;
         case BracketOpen:
             printf("Token { Opening Bracket('(') }\n");
