@@ -19,6 +19,3 @@ Token tokenizer_next(Tokenizer *tokenizer);
 
 // Resets the internal pointer of the tokenizer to the beginning of the expression.
 void tokenizer_reset(Tokenizer *tokenizer);
-
-// Frees de memory of the tokenizer.
-void tokenizer_destroy(Tokenizer *tokenizer);

@@ -130,8 +130,3 @@ void tokenizer_reset(Tokenizer *tokenizer)
         tokenizer->pointer = tokenizer->begin;
     }
 }
-
-void tokenizer_destroy(Tokenizer *tokenizer)
-{
-    Delete(tokenizer);
-}
