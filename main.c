@@ -5,15 +5,14 @@
 
 int main()
 {
-    char *input = NewArray(char, 100);
+    char input[100];
     char c;
     int _;
 
     while (1)
     {
         printf("$> ");
-        _ = scanf("%2000[^\n]", input);
-        _ = scanf("%c", &c);
+        _ = scanf("%[^\n]%c", input, &c);
 
         ParserResult *result = parser_parse(input);
 
