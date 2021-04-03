@@ -161,8 +161,8 @@ ParserResult *parser_parse(char *expression)
 
         if (error == NULL)
         {
-            struct s_OutputQueueHead *queue = New(struct s_OutputQueueHead);
-            struct s_OperatorStackHead *stack = New(struct s_OperatorStackHead);
+            struct s_OutputQueueHead queue = {NULL};
+            struct s_OperatorStackHead stack = {NULL};
             result->error = NULL;
             result->result = 0;
 
@@ -170,7 +170,7 @@ ParserResult *parser_parse(char *expression)
             {
                 if (current->token.type == Number)
                 {
-                    push_output_queue(queue, current->token);
+                    push_output_queue(&queue, current->token);
                 }
                 else if (
                     current->token.type == Addition ||
@@ -179,48 +179,48 @@ ParserResult *parser_parse(char *expression)
                     current->token.type == Division)
                 {
                     while (
-                        stack->node != NULL &&
-                        stack->node->type > current->token.type &&
-                        stack->node->type != BracketOpen)
+                        stack.node != NULL &&
+                        stack.node->type > current->token.type &&
+                        stack.node->type != BracketOpen)
                     {
-                        push_output_queue(queue, (Token){pop_operator_stack(stack), 0});
+                        push_output_queue(&queue, (Token){pop_operator_stack(&stack), 0});
                     }
-                    push_operator_stack(stack, current->token.type);
+                    push_operator_stack(&stack, current->token.type);
                 }
                 else if (current->token.type == BracketOpen)
                 {
-                    push_operator_stack(stack, current->token.type);
+                    push_operator_stack(&stack, current->token.type);
                 }
                 else if (current->token.type == BracketClose)
                 {
-                    while (stack->node != NULL && stack->node->type != BracketOpen)
+                    while (stack.node != NULL && stack.node->type != BracketOpen)
                     {
-                        TokenType type = pop_operator_stack(stack);
-                        push_output_queue(queue, (Token){type, 0});
+                        TokenType type = pop_operator_stack(&stack);
+                        push_output_queue(&queue, (Token){type, 0});
                     }
-                    pop_operator_stack(stack);
+                    pop_operator_stack(&stack);
                 }
             }
 
-            while (stack->node != NULL)
+            while (stack.node != NULL)
             {
-                TokenType type = pop_operator_stack(stack);
+                TokenType type = pop_operator_stack(&stack);
 
                 if (type != Unknown)
                 {
-                    push_output_queue(queue, (Token){type, 0});
+                    push_output_queue(&queue, (Token){type, 0});
                 }
             }
 
-            struct s_ResultStackHead *resultStack = New(struct s_ResultStackHead);
+            struct s_ResultStackHead resultStack = {NULL};
 
-            while (queue->node != NULL)
+            while (queue.node != NULL)
             {
-                struct s_OutputQueueNode *current = pop_output_queue(queue);
+                struct s_OutputQueueNode *current = pop_output_queue(&queue);
 
                 if (current->token.type == Number)
                 {
-                    push_result_stack(resultStack, current->token.value);
+                    push_result_stack(&resultStack, current->token.value);
                 }
                 else if (
                     current->token.type == Addition ||
@@ -228,31 +228,27 @@ ParserResult *parser_parse(char *expression)
                     current->token.type == Multiplication ||
                     current->token.type == Division)
                 {
-                    double value2 = pop_result_stack(resultStack);
-                    double value1 = pop_result_stack(resultStack);
+                    double value2 = pop_result_stack(&resultStack);
+                    double value1 = pop_result_stack(&resultStack);
 
                     switch (current->token.type)
                     {
                     case Addition:
-                        push_result_stack(resultStack, value1 + value2);
+                        push_result_stack(&resultStack, value1 + value2);
                         break;
                     case Substraction:
-                        push_result_stack(resultStack, value1 - value2);
+                        push_result_stack(&resultStack, value1 - value2);
                         break;
                     case Multiplication:
-                        push_result_stack(resultStack, value1 * value2);
+                        push_result_stack(&resultStack, value1 * value2);
                         break;
                     case Division:
-                        push_result_stack(resultStack, value1 / value2);
+                        push_result_stack(&resultStack, value1 / value2);
                         break;
                     }
                 }
             }
-            result->result = pop_result_stack(resultStack);
-
-            Delete(queue);
-            Delete(stack);
-            Delete(resultStack);
+            result->result = pop_result_stack(&resultStack);
         }
         else
         {
