@@ -8,6 +8,7 @@ So far, the only operators it can handle are:
 - Substraction `-`
 - Multiplication `*`
 - Division `/`
+- Exponentation `^`
 - And groups of operations using `(` and `)`.
 
 This program uses the **Shunting Yard** algorithm to transform the list of tokens into a **reversed polish notation**, respecting the operators precedence and groupings.
