@@ -307,7 +307,8 @@ const char *parser_validate_list(TokenList *list)
             else if (
                 current->token.type == BracketOpen &&
                 (!current->next ||
-                 current->next->token.type != Number))
+                 current->next->token.type != Number &&
+                     current->next->token.type != BracketOpen))
             {
                 error = "After an opening bracket, only a number is allowed";
             }
