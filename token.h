@@ -10,7 +10,8 @@ typedef enum e_TokenType
     Division = 4,
     BracketOpen = 5,
     BracketClose = 6,
-    End = 7
+    End = 7,
+    Unknown = 8
 } TokenType;
 
 // Holds the type and the value of a token.

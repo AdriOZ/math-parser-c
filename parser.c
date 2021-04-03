@@ -100,7 +100,7 @@ static void push_operator_stack(struct s_OperatorStackHead *head, TokenType type
 
 static TokenType pop_operator_stack(struct s_OperatorStackHead *head)
 {
-    TokenType result;
+    TokenType result = Unknown;
 
     if (head != NULL && head->node != NULL)
     {
@@ -205,7 +205,11 @@ ParserResult *parser_parse(char *expression)
             while (stack->node != NULL)
             {
                 TokenType type = pop_operator_stack(stack);
-                push_output_queue(queue, (Token){type, 0});
+
+                if (type != Unknown)
+                {
+                    push_output_queue(queue, (Token){type, 0});
+                }
             }
 
             struct s_ResultStackHead *resultStack = New(struct s_ResultStackHead);
@@ -245,13 +249,16 @@ ParserResult *parser_parse(char *expression)
                 }
             }
             result->result = pop_result_stack(resultStack);
+
+            Delete(queue);
+            Delete(stack);
+            Delete(resultStack);
         }
         else
         {
             result->result = 0;
             result->error = error;
         }
-
         token_list_destroy(list);
     }
     else
