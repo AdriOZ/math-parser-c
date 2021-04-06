@@ -14,17 +14,16 @@ int main()
         printf("$> ");
         _ = scanf("%[^\n]%c", input, &c);
 
-        ParserResult *result = parser_parse(input);
+        ParserResult result = parser_parse(input);
 
-        if (result->error == NULL)
+        if (result.error == NULL)
         {
-            printf("\n%f\n\n", result->result);
+            printf("\n%f\n\n", result.result);
         }
         else
         {
-            printf("\n%s\n\n", result->error);
+            printf("\n%s\n\n", result.error);
         }
-        Delete(result);
     }
 
     return 0;

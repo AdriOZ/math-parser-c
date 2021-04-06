@@ -4,10 +4,10 @@ gcc                 \
     token_list.c    \
     parser.c        \
     main.c          \
--o                  \
-    main.o          \
+-lm                 \
 -O3                 \
--lm
+-o                  \
+    main.o
 
 ./main.o
 

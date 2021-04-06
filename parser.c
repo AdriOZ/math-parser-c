@@ -151,9 +151,9 @@ static double pop_result_stack(struct s_ResultStackHead *head)
 
 /* Private utilities */
 
-ParserResult *parser_parse(char *expression)
+ParserResult parser_parse(char *expression)
 {
-    ParserResult *result = New(ParserResult);
+    ParserResult result = (ParserResult){0, NULL};
 
     if (expression != NULL)
     {
@@ -164,8 +164,6 @@ ParserResult *parser_parse(char *expression)
         {
             struct s_OutputQueueHead queue = {NULL};
             struct s_OperatorStackHead stack = {NULL};
-            result->error = NULL;
-            result->result = 0;
 
             for (TokenListNode *current = list; current != NULL && current->token.type != End; current = current->next)
             {
@@ -254,19 +252,17 @@ ParserResult *parser_parse(char *expression)
                     }
                 }
             }
-            result->result = pop_result_stack(&resultStack);
+            result.result = pop_result_stack(&resultStack);
         }
         else
         {
-            result->result = 0;
-            result->error = error;
+            result.error = error;
         }
         token_list_destroy(list);
     }
     else
     {
-        result->result = 0;
-        result->error = "The given expression is null";
+        result.error = "The given expression is null";
     }
     return result;
 }
