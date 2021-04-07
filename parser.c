@@ -249,6 +249,8 @@ ParserResult parser_parse(char *expression)
                     case Exponentation:
                         push_result_stack(&resultStack, pow(value1, value2));
                         break;
+                    default:
+                        break;
                     }
                 }
             }
