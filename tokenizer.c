@@ -47,7 +47,45 @@ Token tokenizer_next(Tokenizer *tokenizer)
     }
     else if (*tokenizer->pointer == '-')
     {
-        result = token_create_substraction();
+        if (isdigit(*(tokenizer->pointer + 1)))
+        {
+            tokenizer->pointer++;
+            char *current = tokenizer->pointer;
+            int lenght = 0;
+            int decimal_separator_count = 0;
+
+            for (; isdigit(*tokenizer->pointer) || (*tokenizer->pointer == '.' && decimal_separator_count == 0) || *tokenizer->pointer == ','; tokenizer->pointer++, lenght++)
+            {
+                if (*tokenizer->pointer == '.')
+                {
+                    decimal_separator_count++;
+                }
+                else if (*tokenizer->pointer == ',')
+                {
+                    lenght--;
+                }
+            }
+            char *value = NewArray(char, (lenght + 1));
+            for (int i = 0; i < lenght; i++, current++)
+            {
+                if (*current != ',')
+                {
+                    value[i] = *current;
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            value[lenght] = '\0';
+            result = token_create_number(strtod(value, NULL) * -1);
+            Delete(value);
+            tokenizer->pointer -= 1;
+        }
+        else
+        {
+            result = token_create_substraction();
+        }
     }
     else if (*tokenizer->pointer == '*')
     {
