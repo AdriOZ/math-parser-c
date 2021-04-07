@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "util.h"
 #include "parser.h"
 
@@ -12,7 +13,8 @@ int main()
     while (1)
     {
         printf("$> ");
-        _ = scanf("%[^\n]%c", input, &c);
+        _ = scanf("%99[^\n]", input);
+        _ = scanf("%c", &c);
 
         ParserResult result = parser_parse(input);
 
