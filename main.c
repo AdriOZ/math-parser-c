@@ -7,24 +7,28 @@
 int main()
 {
     char input[100];
-    char c;
-    int _;
+    char clear;
+    int run = 1;
+    int ignore;
 
-    while (1)
+    while (run)
     {
         printf("$> ");
-        _ = scanf("%99[^\n]", input);
-        _ = scanf("%c", &c);
+        ignore = scanf("%99[^\n]", input);
+        ignore = scanf("%c", &clear);
 
-        ParserResult result = parser_parse(input);
+        if (run = (input[0] != 'q' && input[0] != 'Q'))
+        {
+            ParserResult result = parser_parse(input);
 
-        if (result.error == NULL)
-        {
-            printf("\n%f\n\n", result.result);
-        }
-        else
-        {
-            printf("\n%s\n\n", result.error);
+            if (result.error == NULL)
+            {
+                printf("\n%f\n\n", result.result);
+            }
+            else
+            {
+                printf("\n%s\n\n", result.error);
+            }
         }
     }
 
