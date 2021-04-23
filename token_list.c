@@ -11,6 +11,7 @@ TokenList *token_list_create(Token token)
     TokenList *list = New(TokenList);
     list->token = token;
     list->next = NULL;
+    list->last = NULL;
     return list;
 }
 
@@ -39,13 +40,19 @@ void token_list_push_token(TokenList *list, Token token)
 {
     if (list != NULL)
     {
-        TokenListNode *pointer = list;
+        TokenListNode *newNode = New(TokenListNode);
+        newNode->token = token;
+        newNode->next = NULL;
 
-        for (; pointer->next; pointer = pointer->next)
-            ;
-        pointer->next = New(TokenListNode);
-        pointer->next->next = NULL;
-        pointer->next->token = token;
+        if (list->last == NULL)
+        {
+            list->last = list->next = newNode;
+        }
+        else
+        {
+            list->last->next = newNode;
+            list->last = newNode;
+        }
     }
 }
 

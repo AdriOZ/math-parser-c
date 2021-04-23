@@ -7,6 +7,7 @@ typedef struct s_TokenListNode
 {
     Token token;
     struct s_TokenListNode *next;
+    struct s_TokenListNode *last;
 } TokenListNode;
 
 // Alias of the head of the list.

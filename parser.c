@@ -282,11 +282,25 @@ const char *parser_validate_list(TokenList *list)
 
         for (; !error && current; current = current->next)
         {
-            if (
-                current->token.type == Number &&
-                (current->next && (current->next->token.type == Number || current->next->token.type == BracketOpen)))
+            if (current->token.type == Number && current->next)
             {
-                error = "After a number only an operator or a closing bracket are allowed";
+                if (current->next->token.type == Number)
+                {
+                    TokenListNode *newNode = New(TokenListNode);
+                    newNode->token = token_create_addition();
+                    newNode->next = current->next;
+                    current->next = newNode;
+                    current = newNode;
+                }
+                else if (current->next->token.type == BracketOpen)
+                {
+                    TokenListNode *newNode = New(TokenListNode);
+                    newNode->token = token_create_multiplication();
+                    newNode->next = current->next;
+                    current->next = newNode;
+                    current = newNode;
+                }
+                operands++;
             }
             else if (
                 (
