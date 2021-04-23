@@ -282,27 +282,7 @@ const char *parser_validate_list(TokenList *list)
 
         for (; !error && current; current = current->next)
         {
-            if (current->token.type == Number && current->next)
-            {
-                if (current->next->token.type == Number)
-                {
-                    TokenListNode *newNode = New(TokenListNode);
-                    newNode->token = token_create_addition();
-                    newNode->next = current->next;
-                    current->next = newNode;
-                    current = newNode;
-                }
-                else if (current->next->token.type == BracketOpen)
-                {
-                    TokenListNode *newNode = New(TokenListNode);
-                    newNode->token = token_create_multiplication();
-                    newNode->next = current->next;
-                    current->next = newNode;
-                    current = newNode;
-                }
-                operands++;
-            }
-            else if (
+            if (
                 (
                     current->token.type == Addition ||
                     current->token.type == Substraction ||
@@ -324,12 +304,6 @@ const char *parser_validate_list(TokenList *list)
             {
                 error = "After an opening bracket, only a number is allowed";
             }
-            else if (
-                current->token.type == BracketClose &&
-                (current->next && (current->next->token.type == Number || current->next->token.type == BracketOpen)))
-            {
-                error = "After a closing bracket, only an operator is allowed";
-            }
             else if (current->token.type == BracketClose && brackets == 0)
             {
                 printf("%d\n", brackets);
@@ -339,6 +313,22 @@ const char *parser_validate_list(TokenList *list)
             {
                 if (current->token.type == Number)
                 {
+                    if (current->next && current->next->token.type == Number)
+                    {
+                        TokenListNode *newNode = New(TokenListNode);
+                        newNode->token = token_create_addition();
+                        newNode->next = current->next;
+                        current->next = newNode;
+                        current = newNode;
+                    }
+                    else if (current->next && current->next->token.type == BracketOpen)
+                    {
+                        TokenListNode *newNode = New(TokenListNode);
+                        newNode->token = token_create_multiplication();
+                        newNode->next = current->next;
+                        current->next = newNode;
+                        current = newNode;
+                    }
                     operands++;
                 }
                 else if (
@@ -356,6 +346,14 @@ const char *parser_validate_list(TokenList *list)
                 }
                 else if (current->token.type == BracketClose)
                 {
+                    if (current->next && (current->next->token.type == Number || current->next->token.type == BracketOpen))
+                    {
+                        TokenListNode *newNode = New(TokenListNode);
+                        newNode->token = token_create_multiplication();
+                        newNode->next = current->next;
+                        current->next = newNode;
+                        current = newNode;
+                    }
                     brackets--;
                 }
             }
