@@ -1,7 +1,7 @@
 #pragma once
 
 // The different tokens that can be parsed.
-typedef enum e_TokenType
+typedef enum
 {
     Number = 0,
     Addition = 1,
@@ -16,7 +16,7 @@ typedef enum e_TokenType
 } TokenType;
 
 // Holds the type and the value of a token.
-typedef struct s_Token
+typedef struct
 {
     TokenType type;
     double value;

@@ -4,7 +4,7 @@
 #include "token_list.h"
 
 // Represents the result of parsing an expression.
-typedef struct s_ParserResult
+typedef struct
 {
     double result;
     const char *error;

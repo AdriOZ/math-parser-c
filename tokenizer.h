@@ -3,7 +3,7 @@
 #include "token.h"
 
 // Holds the information needed to tokenize an expression
-typedef struct s_Tokenizer
+typedef struct
 {
     char *expression;
     char *begin;
