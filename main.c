@@ -15,7 +15,10 @@ int main()
         ignore = scanf("%99[^\n]", input);
         ignore = scanf("%c", &clear);
 
-        if (run = (input[0] != 'q' && input[0] != 'Q'))
+        if (run = (input[0] != 'q' &&
+                   input[0] != 'Q' &&
+                   input[0] != 'e' &&
+                   input[0] != 'E'))
         {
             ParserResult result = parser_parse(input);
 
