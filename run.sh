@@ -6,6 +6,7 @@ gcc                 \
     main.c          \
 -lm                 \
 -O3                 \
+-std=c18            \
 -o                  \
     main.o
 
