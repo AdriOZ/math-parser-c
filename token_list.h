@@ -3,7 +3,7 @@
 #include "token.h"
 
 // Represents a node in a list of tokens.
-typedef struct
+typedef struct s_TokenListNode
 {
     Token token;
     struct s_TokenListNode *next;
