@@ -1,5 +1,6 @@
 gcc                 \
     token.c         \
+    stack.c         \
     tokenizer.c     \
     token_list.c    \
     parser.c        \
