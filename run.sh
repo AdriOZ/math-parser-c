@@ -1,15 +1,11 @@
 gcc                 \
-    token.c         \
-    tokenizer.c     \
-    token_list.c    \
-    parser.c        \
-    main.c          \
+    src/*.c         \
 -lm                 \
 -O3                 \
--std=c18            \
+-std=c17            \
 -o                  \
-    main.o
+    build/main.o
 
-./main.o
+build/main.o
 
-rm main.o
+rm build/main.o
