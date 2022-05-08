@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util.h"
+
 // The different tokens that can be parsed.
 typedef enum
 {
@@ -19,14 +21,14 @@ typedef enum
 typedef struct
 {
     TokenType type;
-    double value;
+    f64 value;
 } Token;
 
 // Creates token based on the type and value passed
-Token token_create(TokenType type, double value);
+Token token_create(TokenType type, f64 value);
 
 // Creates a number token with the value passed
-Token token_create_number(double value);
+Token token_create_number(f64 value);
 
 // Creates an addition token
 Token token_create_addition();

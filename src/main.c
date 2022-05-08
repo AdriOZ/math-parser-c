@@ -1,29 +1,34 @@
 #include <stdio.h>
 
+#include "util.h"
 #include "parser.h"
 
 int main()
 {
-    char input[100];
+    char input[256];
     char clear;
-    int run = 1;
-    int ignore;
+    i32 run = 1;
     FILE *log = fopen("log.txt", "a");
 
     while (run)
     {
         printf("$> ");
-        ignore = scanf("%99[^\n]", input);
-        ignore = scanf("%c", &clear);
+        scanf_s("%255[^\n]", input, 255);
+        scanf_s("%c", &clear, 1);
 
-        if (run = (input[0] != 'q' && input[0] != 'Q' && input[0] != 'e' && input[0] != 'E'))
+        run = (input[0] != 'q' &&
+               input[0] != 'Q' &&
+               input[0] != 'e' &&
+               input[0] != 'E');
+
+        if (run)
         {
             ParserResult result = parser_parse(input);
 
             if (result.error == NULL)
             {
-                printf("\n%.2f\n\n", result.result);
-                fprintf(log, "%s = %.2f\n", input, result.result);
+                printf("\n%.2Lf\n\n", result.result);
+                fprintf(log, "%s = %.2Lf\n", input, result.result);
             }
             else
             {

@@ -1,12 +1,13 @@
 #pragma once
 
+#include "util.h"
 #include "token.h"
 #include "token_list.h"
 
 // Represents the result of parsing an expression.
 typedef struct
 {
-    double result;
+    f64 result;
     const char *error;
 } ParserResult;
 

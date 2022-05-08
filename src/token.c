@@ -1,12 +1,14 @@
 #include <stdio.h>
-#include "token.h"
 
-Token token_create(TokenType type, double value)
+#include "token.h"
+#include "util.h"
+
+Token token_create(TokenType type, f64 value)
 {
     return (Token){type, value};
 }
 
-Token token_create_number(double value)
+Token token_create_number(f64 value)
 {
     return token_create(Number, value);
 }
@@ -62,7 +64,7 @@ void token_print(Token *token)
         switch (token->type)
         {
         case Number:
-            printf("Token { Number(%f) }\n", token->value);
+            printf("Token { Number(%Lf) }\n", token->value);
             break;
         case Addition:
             printf("Token { Addition('+') }\n");
@@ -87,6 +89,9 @@ void token_print(Token *token)
             break;
         case End:
             printf("Token { END }\n");
+            break;
+        default:
+            printf("Token { UNKNOWN }\n");
             break;
         }
     }

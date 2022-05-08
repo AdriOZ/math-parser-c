@@ -32,7 +32,7 @@ struct s_OperatorStackHead
 
 struct s_ResultStackNode
 {
-    double value;
+    f64 value;
     struct s_ResultStackNode *next;
 };
 
@@ -72,7 +72,6 @@ static struct s_OutputQueueNode *pop_output_queue(struct s_OutputQueueHead *head
     if (head != NULL && head->node != NULL)
     {
         result = head->node;
-        struct s_OutputQueueNode *tmp = head->node;
         head->node = head->node->next;
     }
 
@@ -114,7 +113,7 @@ static TokenType pop_operator_stack(struct s_OperatorStackHead *head)
     return result;
 }
 
-static void push_result_stack(struct s_ResultStackHead *head, double value)
+static void push_result_stack(struct s_ResultStackHead *head, f64 value)
 {
     if (head != NULL)
     {
@@ -134,9 +133,9 @@ static void push_result_stack(struct s_ResultStackHead *head, double value)
     }
 }
 
-static double pop_result_stack(struct s_ResultStackHead *head)
+static f64 pop_result_stack(struct s_ResultStackHead *head)
 {
-    double result;
+    f64 result = 0;
 
     if (head != NULL && head->node != NULL)
     {
@@ -229,8 +228,8 @@ ParserResult parser_parse(char *expression)
                     current->token.type == Division ||
                     current->token.type == Exponentation)
                 {
-                    double value2 = pop_result_stack(&resultStack);
-                    double value1 = pop_result_stack(&resultStack);
+                    f64 value2 = pop_result_stack(&resultStack);
+                    f64 value1 = pop_result_stack(&resultStack);
 
                     switch (current->token.type)
                     {
@@ -253,6 +252,7 @@ ParserResult parser_parse(char *expression)
                         break;
                     }
                 }
+                Delete(current);
             }
             result.result = pop_result_stack(&resultStack);
         }
@@ -276,9 +276,9 @@ const char *parser_validate_list(TokenList *list)
     if (list != NULL)
     {
         TokenListNode *current = list;
-        int brackets = 0;
-        int operators = 0;
-        int operands = 0;
+        i32 brackets = 0;
+        i32 operators = 0;
+        i32 operands = 0;
 
         for (; !error && current; current = current->next)
         {

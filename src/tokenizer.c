@@ -5,7 +5,7 @@
 #include "util.h"
 #include "tokenizer.h"
 
-static int tokenizer_is_valid_char(char c)
+static i32 tokenizer_is_valid_char(char c)
 {
     return isdigit(c) || c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '(' || c == ')' || c == '.';
 }
@@ -47,8 +47,8 @@ Token tokenizer_next(Tokenizer *tokenizer)
         {
             tokenizer->pointer++;
             char *current = tokenizer->pointer;
-            int lenght = 0;
-            int decimal_separator_count = 0;
+            i32 lenght = 0;
+            i32 decimal_separator_count = 0;
 
             for (; isdigit(*tokenizer->pointer) || (*tokenizer->pointer == '.' && decimal_separator_count == 0) || *tokenizer->pointer == ','; tokenizer->pointer++, lenght++)
             {
@@ -62,7 +62,7 @@ Token tokenizer_next(Tokenizer *tokenizer)
                 }
             }
             char *value = NewArray(char, (lenght + 1));
-            for (int i = 0; i < lenght; i++, current++)
+            for (i32 i = 0; i < lenght; i++, current++)
             {
                 if (*current != ',')
                 {
@@ -89,8 +89,8 @@ Token tokenizer_next(Tokenizer *tokenizer)
         {
             tokenizer->pointer++;
             char *current = tokenizer->pointer;
-            int lenght = 0;
-            int decimal_separator_count = 0;
+            i32 lenght = 0;
+            i32 decimal_separator_count = 0;
 
             for (; isdigit(*tokenizer->pointer) || (*tokenizer->pointer == '.' && decimal_separator_count == 0) || *tokenizer->pointer == ','; tokenizer->pointer++, lenght++)
             {
@@ -104,7 +104,7 @@ Token tokenizer_next(Tokenizer *tokenizer)
                 }
             }
             char *value = NewArray(char, (lenght + 1));
-            for (int i = 0; i < lenght; i++, current++)
+            for (i32 i = 0; i < lenght; i++, current++)
             {
                 if (*current != ',')
                 {
@@ -148,14 +148,14 @@ Token tokenizer_next(Tokenizer *tokenizer)
     else if (*tokenizer->pointer == '.')
     {
         char *current = tokenizer->pointer;
-        int lenght = 1;
+        i32 lenght = 1;
 
         for (tokenizer->pointer++; isdigit(*tokenizer->pointer); tokenizer->pointer++, lenght++)
             ;
         char *value = NewArray(char, (lenght + 2));
         value[0] = '0';
 
-        for (int i = 1; i <= lenght; i++, current++)
+        for (i32 i = 1; i <= lenght; i++, current++)
         {
             value[i] = *current;
         }
@@ -167,8 +167,8 @@ Token tokenizer_next(Tokenizer *tokenizer)
     else if (isdigit(*tokenizer->pointer))
     {
         char *current = tokenizer->pointer;
-        int lenght = 0;
-        int decimal_separator_count = 0;
+        i32 lenght = 0;
+        i32 decimal_separator_count = 0;
 
         for (; isdigit(*tokenizer->pointer) || (*tokenizer->pointer == '.' && decimal_separator_count == 0) || *tokenizer->pointer == ','; tokenizer->pointer++, lenght++)
         {
@@ -182,7 +182,7 @@ Token tokenizer_next(Tokenizer *tokenizer)
             }
         }
         char *value = NewArray(char, (lenght + 1));
-        for (int i = 0; i < lenght; i++, current++)
+        for (i32 i = 0; i < lenght; i++, current++)
         {
             if (*current != ',')
             {
